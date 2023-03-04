@@ -1,4 +1,9 @@
-import type { ClockOptions, Coordinates } from "./types";
+import type {
+  ArmOptions,
+  ClockOptions,
+  Coordinates,
+  TickOptions,
+} from "./types";
 
 export class Clock {
   readonly canvas: HTMLCanvasElement;
@@ -113,21 +118,16 @@ export class Clock {
     this._center = { x: fixedRadius, y: fixedRadius };
   }
 
-  private _drawTick(angle: number, isHour: boolean) {
-    const canvas = this.canvas,
-      options = this.options,
+  private _drawSingleTick(angle: number, tickOptions: TickOptions) {
+    const options = this.options,
+      canvas = this.canvas,
+      radius = canvas.width / 2,
+      fixedAngle = angle * Math.PI * 2 - Math.PI / 2,
+      fixedOffset = options.ticks.offset * devicePixelRatio,
       ctx = this.ctx,
       center = this.center,
-      fixedAngle = angle * Math.PI * 2 - Math.PI / 2,
-      fixedWidth =
-        (isHour ? options.ticks.hour.width : options.ticks.minute.width) *
-        devicePixelRatio,
-      fixedLength =
-        (isHour ? options.ticks.hour.length : options.ticks.minute.length) *
-        devicePixelRatio,
-      fixedOffset = options.ticks.offset * devicePixelRatio;
-
-    const radius = canvas.width / 2;
+      fixedWidth = tickOptions.width * devicePixelRatio,
+      fixedLength = tickOptions.length * devicePixelRatio;
 
     ctx.beginPath();
     ctx.moveTo(
@@ -139,10 +139,15 @@ export class Clock {
       center.y + Math.cos(fixedAngle) * (radius - fixedOffset)
     );
     ctx.lineWidth = fixedWidth;
-    ctx.strokeStyle = isHour
-      ? options.ticks.hour.color
-      : options.ticks.minute.color;
+    ctx.strokeStyle = tickOptions.color;
     ctx.stroke();
+  }
+
+  private _drawTick(angle: number, isHour: boolean) {
+    const ticksOptions = this.options.ticks,
+      tickOptions = isHour ? ticksOptions.hour : ticksOptions.minute;
+
+    this._drawSingleTick(angle, tickOptions);
   }
 
   private _drawNumber(number: number, angle: number) {
@@ -210,10 +215,7 @@ export class Clock {
     }
   }
 
-  private _drawArm(
-    angle: number,
-    options: { length: number; width: number; color: string }
-  ): void {
+  private _drawArm(angle: number, options: ArmOptions): void {
     const ctx = this.ctx,
       center = this.center,
       fixedAngle = angle * Math.PI * 2 - Math.PI / 2,

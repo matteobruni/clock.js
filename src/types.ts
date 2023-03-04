@@ -1,3 +1,15 @@
+export interface TickOptions {
+  color: string;
+  width: number;
+  length: number;
+}
+
+export interface ArmOptions {
+  length: number;
+  width: number;
+  color: string;
+}
+
 export interface ClockOptions {
   radius: number;
   frame: {
@@ -11,16 +23,8 @@ export interface ClockOptions {
   ticks: {
     show: boolean;
     offset: number;
-    minute: {
-      color: string;
-      width: number;
-      length: number;
-    };
-    hour: {
-      color: string;
-      width: number;
-      length: number;
-    };
+    minute: TickOptions;
+    hour: TickOptions;
   };
   numbers: {
     show: boolean;
@@ -34,22 +38,11 @@ export interface ClockOptions {
       width: number;
       color: string;
     };
-    hours: {
-      length: number;
-      width: number;
-      color: string;
-    };
-    minutes: {
-      length: number;
-      width: number;
-      color: string;
-    };
-    seconds: {
+    hours: ArmOptions;
+    minutes: ArmOptions;
+    seconds: ArmOptions & {
       show: boolean;
       continuous: boolean;
-      length: number;
-      width: number;
-      color: string;
     };
   };
 }
