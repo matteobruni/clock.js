@@ -2,10 +2,11 @@
   "name": "clock.js",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && tsc -p tsconfig.esm.json && tsc -p tsconfig.types.json && tsc -p tsconfig.cjs.json"
   },
   "keywords": [],
   "author": "",

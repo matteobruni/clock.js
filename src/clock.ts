@@ -45,21 +45,28 @@ export class Clock {
       frame: {
         offset: 2.5 * factor,
         width: 1.5 * factor,
+        colors: {
+          background: "#fff",
+          border: "#000",
+        },
       },
       ticks: {
         show: true,
         offset: 3 * factor,
         minute: {
+          color: "#000",
           width: 0.5 * factor,
           length: 3 * factor,
         },
         hour: {
+          color: "#000",
           width: 1 * factor,
           length: 6 * factor,
         },
       },
       numbers: {
         show: true,
+        color: "#000",
         radius: 92.5 * factor,
         size: 20 * factor,
       },
@@ -67,33 +74,43 @@ export class Clock {
         cover: {
           show: true,
           width: 5 * factor,
+          color: "#000",
         },
         hours: {
           length: 80 * factor,
           width: 1 * factor,
+          color: "#000",
         },
         minutes: {
           length: 83.5 * factor,
           width: 0.75 * factor,
+          color: "#000",
         },
         seconds: {
           show: true,
           continuous: true,
           length: 92.5 * factor,
           width: 0.5 * factor,
+          color: "#f00",
         },
       },
     };
 
-    this.canvas.style.width = `${this.options.radius * 2}px`;
-    this.canvas.style.height = `${this.options.radius * 2}px`;
+    this._prepareCanvas();
+  }
 
-    const rect = this.canvas.getBoundingClientRect();
+  private _prepareCanvas() {
+    const diameter = this.options.radius * 2,
+      fixedRadius = this.options.radius * devicePixelRatio,
+      fixedDiameter = diameter * devicePixelRatio;
 
-    this.canvas.width = rect.width * devicePixelRatio;
-    this.canvas.height = rect.height * devicePixelRatio;
+    this.canvas.style.width = `${diameter}px`;
+    this.canvas.style.height = `${diameter}px`;
 
-    this._center = { x: this.canvas.width / 2, y: this.canvas.height / 2 };
+    this.canvas.width = fixedDiameter;
+    this.canvas.height = fixedDiameter;
+
+    this._center = { x: fixedRadius, y: fixedRadius };
   }
 
   private _drawTick(angle: number, isHour: boolean) {
@@ -122,6 +139,9 @@ export class Clock {
       center.y + Math.cos(fixedAngle) * (radius - fixedOffset)
     );
     ctx.lineWidth = fixedWidth;
+    ctx.strokeStyle = isHour
+      ? options.ticks.hour.color
+      : options.ticks.minute.color;
     ctx.stroke();
   }
 
@@ -140,13 +160,12 @@ export class Clock {
     ctx.font = font;
 
     const metrics = ctx.measureText(text),
-      fontHeight =
-        metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent,
       actualHeight =
         metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
     ctx.font = font;
     ctx.textAlign = "center";
+    ctx.fillStyle = options.numbers.color;
     ctx.fillText(
       text,
       Math.cos(fixedAngle) * (fixedRadius - fixedWidth / 4) + center.x,
@@ -170,8 +189,11 @@ export class Clock {
     ctx.closePath();
 
     ctx.lineWidth = fixedWidth;
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = options.frame.colors.border;
     ctx.stroke();
+
+    ctx.fillStyle = options.frame.colors.background;
+    ctx.fill();
 
     if (options.numbers.show) {
       for (let i = 1; i <= 12; i++) {
@@ -190,7 +212,7 @@ export class Clock {
 
   private _drawArm(
     angle: number,
-    options: { length: number; width: number }
+    options: { length: number; width: number; color: string }
   ): void {
     const ctx = this.ctx,
       center = this.center,
@@ -206,7 +228,7 @@ export class Clock {
     );
 
     ctx.lineWidth = fixedWidth;
-
+    ctx.strokeStyle = options.color;
     ctx.stroke();
   }
 
@@ -219,6 +241,8 @@ export class Clock {
     ctx.beginPath();
     ctx.arc(center.x, center.y, fixedWidth, 0, Math.PI * 2);
     ctx.closePath();
+
+    ctx.fillStyle = options.arms.cover.color;
     ctx.fill();
   }
 
