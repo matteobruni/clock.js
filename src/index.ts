@@ -1,5 +1,5 @@
-export * from "./clock";
-export * from "./types";
+export * from "./clock.js";
+export * from "./types.js";
 
 /*
 const clock = new Clock();

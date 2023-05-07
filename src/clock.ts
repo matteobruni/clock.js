@@ -49,7 +49,7 @@ export class Clock {
       radius,
       frame: {
         offset: 2.5 * factor,
-        width: 1.5 * factor,
+        width: 3 * factor,
         colors: {
           background: "#fff",
           border: "#000",
@@ -57,7 +57,7 @@ export class Clock {
       },
       ticks: {
         show: true,
-        offset: 3 * factor,
+        offset: 2.5 * factor,
         minute: {
           color: "#000",
           width: 0.5 * factor,
@@ -105,8 +105,9 @@ export class Clock {
   }
 
   private _prepareCanvas() {
-    const diameter = this.options.radius * 2,
-      fixedRadius = this.options.radius * devicePixelRatio,
+    const radius = this.options.radius + this.options.frame.width,
+      diameter = radius * 2,
+      fixedRadius = radius * devicePixelRatio,
       fixedDiameter = diameter * devicePixelRatio;
 
     this.canvas.style.width = `${diameter}px`;

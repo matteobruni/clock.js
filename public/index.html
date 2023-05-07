@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Clock</title>
+  </head>
+  <body>
+    <script type="module">
+      import { Clock } from "./esm/index.js";
+
+      const clock = new Clock();
+
+      clock.setRadius(30);
+
+      document.body.append(clock.canvas);
+
+      requestAnimationFrame(function loop() {
+        clock.draw(new Date());
+
+        requestAnimationFrame(loop);
+      });
+    </script>
+  </body>
+</html>

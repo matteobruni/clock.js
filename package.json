@@ -6,7 +6,7 @@
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
-    "build": "tsc && tsc -p tsconfig.esm.json && tsc -p tsconfig.types.json && tsc -p tsconfig.cjs.json"
+    "build": "tsc && tsc -p tsconfig.esm.json && tsc -p tsconfig.types.json && tsc -p tsconfig.cjs.json && rm -fr public/esm && cp -R dist/esm public"
   },
   "keywords": [],
   "author": "",
